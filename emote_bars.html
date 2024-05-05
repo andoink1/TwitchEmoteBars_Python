@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Transparent Bar Chart</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            background-color: transparent;
+        }
+        #myChart {
+            width:100%;
+            height:100%;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="myChart"></canvas>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        fetch('counts.txt')
+            .then(response => response.text())
+            .then(text => {
+                const data = text.trim().split('\n').map(line => {
+                    const [label, value] = line.split(',');
+                    return { label, value: parseInt(value, 10) };
+                });
+
+                createDoughnutChart(data);
+            })
+            .catch(error => console.error('Error loading the file:', error));
+
+        function createDoughnutChart(data) {
+
+            var ctx = document.getElementById('myChart').getContext('2d');
+            const labels = data.map(item => item.label);
+            const values = data.map(item => item.value);
+
+            var myChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Emotes',
+                        data: values,
+                        backgroundColor: [
+                            addAlpha('#D277FC', 0.9),
+                            addAlpha('#F36914', 0.9)
+                        ],
+                        borderColor: [
+                            addAlpha('#FF0000', 1),
+                            addAlpha('#0000FF', 1)
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    circumference: 90,
+                    animation: false
+                }
+            });
+        }
+
+        function addAlpha(color, opacity) {
+            var _opacity = Math.round(Math.min(Math.max(opacity ?? 1, 0), 1) * 255);
+            return color + _opacity.toString(16).toUpperCase();
+        }
+    </script>
+</body>
+</html>

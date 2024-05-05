@@ -1,0 +1,4 @@
+font=Helvetica
+num_font_size=12
+bg_color=#000000
+text_color=#ff0044
